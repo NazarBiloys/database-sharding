@@ -1,0 +1,64 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: "./build/Dockerfile"
+    container_name: app
+    depends_on:
+      - postgresql-b
+    ports:
+      - "90:90"
+    volumes:
+      - ./logs:/logs
+    networks:
+      - app
+
+  postgresql-b:
+    image: postgres:10.5
+    container_name: postgresql-b
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_SSLMODE=disable
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./postgresql-b-data:/var/lib/postgresql/data
+      - ./build/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+    networks:
+      - app
+
+  postgresql-b1:
+    image: postgres:10.5
+    container_name: postgresql-b1
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_SSLMODE=disable
+    ports:
+      - '5440:5432'
+    volumes:
+      - ./postgresql-b1-data:/var/lib/postgresql/data
+      - ./build/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+    networks:
+      - app
+
+  postgresql-b2:
+    image: postgres:10.5
+    container_name: postgresql-b2
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_SSLMODE=disable
+    ports:
+      - '5442:5432'
+    volumes:
+      - ./postgresql-b2-data:/var/lib/postgresql/data
+      - ./build/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+    networks:
+      - app
+
+networks:
+  app:
